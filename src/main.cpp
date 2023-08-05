@@ -29,7 +29,6 @@ volatile bool isConnected = false;
 volatile int prevAngle = 0;
 // 784 is about 1 degree on cessna 152 using -20 - 20 as the limits from simconnect values
 volatile int joystickValue = 784;
-volatile int trimFromSimConnect = -1;
 ResponsiveAnalogRead sensorReader(ANALOG_PIN, true);
 
 int readAnalogue() {
@@ -88,10 +87,6 @@ bool handleIncoming(String data) {
     else if (data.startsWith("SETSENS")) {
         setNewSensitivity(data.substring(8).toInt());
     }
-    else if(data.startsWith("SETTRIM")) {
-        //printf("Received %s", data.c_str());
-        trimFromSimConnect = data.substring(8).toInt();
-    }
     else {// unknown data
         return false;
     }
@@ -100,24 +95,13 @@ bool handleIncoming(String data) {
 
 __attribute__((unused))
 void loop() {
-    int difference = getDifference(prevAngle, readAnalogue());
-    bool physicalTrimMoved = difference != 0;
-
     if(Serial.available())
         handleIncoming(Serial.readString());
-    bool isTrimIncoming = trimFromSimConnect != -1;
-    if(isTrimIncoming) {
-        joystickValue = trimFromSimConnect;
-        servo.write(map(joystickValue, minJoystickValue, maxJoystickValue, MIN_SERVO_ANGLE, MAX_SERVO_ANGLE));
-        trimFromSimConnect = -1;
-    }
-    if(physicalTrimMoved) {
-        joystickValue = limitJoystickValue(joystickValue,difference);
-        servo.write(map(joystickValue, minJoystickValue, maxJoystickValue, MIN_SERVO_ANGLE, MAX_SERVO_ANGLE));
-        //tell simtrim to stop requesting
-        Joystick.setRxAxis(joystickValue);
-        //tell simtrim to resume requesting
-    }
+
+    int difference = getDifference(prevAngle, readAnalogue());
+    joystickValue = limitJoystickValue(joystickValue,difference);
+    servo.write(map(joystickValue, minJoystickValue, maxJoystickValue, MIN_SERVO_ANGLE, MAX_SERVO_ANGLE));
+    Joystick.setRxAxis(joystickValue);
 
     delay(DELAY);
 }
