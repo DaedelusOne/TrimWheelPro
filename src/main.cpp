@@ -3,7 +3,7 @@
 #include "ResponsiveAnalogRead.h"
 
 #define ANALOG_PIN A0
-#define DELAY 100
+#define DELAY 50
 #define MAX_ANALOG 1023.0
 #define MAX_HALL_ANGLE_PER_TURN 360
 
@@ -55,7 +55,7 @@ void loop() {
     int difference = getDifference(prevAngle, readAnalogue());
     if (difference != 0) {
         if (isConnected) {
-            printf("NEWDIFF|%d", difference);
+            printf("NEWDIFF|%d\n", difference);
         }
     }
 
