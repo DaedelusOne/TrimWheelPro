@@ -30,16 +30,6 @@ int readAnalogue() {
     return sensorReader.getValue() / MAX_ANALOG * DEGREES_PER_TURN;
 }
 
-__attribute__((unused))
-void setup() {
-    //Serial.begin(115200);
-    prevAngle = readAnalogue();
-    joystickValue = ((((MAX_JOYSTICK_RANGE - MIN_JOYSTICK_RANGE) / 2) / DEGREES_PER_TURN) * DEGREES_PER_TURN) + prevAngle;
-    Joystick.begin();
-    Joystick.setRxAxisRange(MIN_JOYSTICK_RANGE, MAX_JOYSTICK_RANGE);
-    Joystick.setRxAxis(joystickValue);
-}
-
 int getAngleDifference(int oldDegrees, int newDegrees) {
     int diff = newDegrees - oldDegrees;
     if (diff > FULL_ROTATION_DIFF_THRESHOLD) diff = diff - newDegrees;
@@ -49,14 +39,26 @@ int getAngleDifference(int oldDegrees, int newDegrees) {
 }
 
 __attribute__((unused))
+void setup() {
+    //Serial.begin(115200);
+    prevAngle = readAnalogue();
+    joystickValue = (MAX_JOYSTICK_RANGE - MIN_JOYSTICK_RANGE) / 2;
+    Joystick.begin();
+    Joystick.setRxAxisRange(MIN_JOYSTICK_RANGE, MAX_JOYSTICK_RANGE);
+    Joystick.setRxAxis(joystickValue);
+}
+
+__attribute__((unused))
 void loop() {
     int currentAngle = readAnalogue();
     int difference = getAngleDifference(prevAngle, currentAngle);
-    if (difference != 0) {
-        //printf("prevangle = %d currangle = %d joyvalue = %d difference = %d\n", prevAngle, currentAngle, joystickValue, difference);
-        prevAngle = currentAngle;
+    if (difference == 0) {
+        Joystick.setRxAxis(joystickValue);
+    } else {
+        //printf("Before: prevangle = %d currangle = %d joyvalue = %d difference = %d\n", prevAngle, currentAngle, joystickValue, difference);
         joystickValue += difference;
         Joystick.setRxAxis(joystickValue);
+        prevAngle = currentAngle;
     }
 
     delay(DELAY);
