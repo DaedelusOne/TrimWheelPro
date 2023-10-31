@@ -7,8 +7,10 @@
 #define MAX_ANALOG 1023.0
 #define DEGREES_PER_TURN 360
 #define MAX_TURNS 4
+#define MAX_RANGE DEGREES_PER_TURN * MAX_TURNS
+#define MIN_RANGE 0
 
-//The threshold value that cannot be exceeded. Used to detect the sensor has been fully rotated or not
+// The threshold value is used to detect if the sensor has been rotated fully and has crossed the point of 360/0 degrees
 #define FULL_ROTATION_DIFF_THRESHOLD (DEGREES_PER_TURN / 100) * 60 // 60% of degrees per turn
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_GAMEPAD,
@@ -39,10 +41,9 @@ int getAngleDifference(int oldDegrees, int newDegrees) {
 __attribute__((unused))
 void setup() {
     prevAngle = readAnalogue();
-    int maxRange = DEGREES_PER_TURN * MAX_TURNS;
-    joystickValue = (maxRange) / 2;
+    joystickValue = (MAX_RANGE - MIN_RANGE) / 2;
     Joystick.begin();
-    Joystick.setRxAxisRange(0, maxRange);
+    Joystick.setRxAxisRange(MIN_RANGE, MAX_RANGE);
     Joystick.setRxAxis(joystickValue);
 }
 
@@ -50,6 +51,7 @@ __attribute__((unused))
 void loop() {
     int currentAngle = readAnalogue();
     joystickValue += getAngleDifference(prevAngle, currentAngle);
+    joystickValue = max(min(joystickValue, MAX_RANGE), MIN_RANGE);
     Joystick.setRxAxis(joystickValue);
     prevAngle = currentAngle;
 
