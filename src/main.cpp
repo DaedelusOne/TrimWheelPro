@@ -11,7 +11,7 @@
 #define MIN_RANGE 0
 
 // The threshold value is used to detect if the sensor has been rotated fully and has crossed the point of 360/0 degrees
-#define FULL_ROTATION_DIFF_THRESHOLD (DEGREES_PER_TURN / 100) * 60 // 60% of degrees per turn
+#define FULL_ROTATION_DIFF_THRESHOLD (DEGREES_PER_TURN / 100) * 60
 
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_GAMEPAD,
                    0, 0,
