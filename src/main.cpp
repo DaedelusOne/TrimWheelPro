@@ -49,14 +49,9 @@ void setup() {
 __attribute__((unused))
 void loop() {
     int currentAngle = readAnalogue();
-    int difference = getAngleDifference(prevAngle, currentAngle);
-    if (difference == 0) {
-        Joystick.setRxAxis(joystickValue);
-    } else {
-        joystickValue += difference;
-        Joystick.setRxAxis(joystickValue);
-        prevAngle = currentAngle;
-    }
+    joystickValue += getAngleDifference(prevAngle, currentAngle);
+    Joystick.setRxAxis(joystickValue);
+    prevAngle = currentAngle;
 
     delay(DELAY);
 }
