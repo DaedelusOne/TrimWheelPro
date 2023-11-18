@@ -6,7 +6,7 @@
 #define DELAY 50
 #define MAX_ANALOG 1023.0
 #define DEGREES_PER_TURN 360
-#define MAX_TURNS 4
+#define MAX_TURNS 4 // increase this to decrease sensitivity, decrease to increase sensitivity
 #define MAX_RANGE DEGREES_PER_TURN * MAX_TURNS
 #define MIN_RANGE 0
 
@@ -38,6 +38,10 @@ int getAngleDifference(int oldDegrees, int newDegrees) {
     return diff;
 }
 
+int enforceRange(int valueToEnforce) {
+    return max(min(valueToEnforce, MAX_RANGE), MIN_RANGE);
+}
+
 __attribute__((unused))
 void setup() {
     prevAngle = readAnalogue();
@@ -50,8 +54,8 @@ void setup() {
 __attribute__((unused))
 void loop() {
     int currentAngle = readAnalogue();
-    joystickValue += getAngleDifference(prevAngle, currentAngle);
-    joystickValue = max(min(joystickValue, MAX_RANGE), MIN_RANGE);
+    int newJoystickValue = joystickValue + getAngleDifference(prevAngle, currentAngle);
+    joystickValue = enforceRange(newJoystickValue);
     Joystick.setRxAxis(joystickValue);
     prevAngle = currentAngle;
 
