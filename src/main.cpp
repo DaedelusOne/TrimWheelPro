@@ -21,8 +21,8 @@ Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_GAMEPAD,
                    false, false, false);
 
 
-volatile int prevAngle = 0;
-volatile int joystickValue;
+int prevAngle;
+int joystickValue;
 ResponsiveAnalogRead sensorReader(ANALOG_PIN, true);
 
 int readAnalogue() {
@@ -49,6 +49,7 @@ void setup() {
     Joystick.begin();
     Joystick.setRxAxisRange(MIN_RANGE, MAX_RANGE);
     Joystick.setRxAxis(joystickValue);
+    delay(10000);
 }
 
 __attribute__((unused))
