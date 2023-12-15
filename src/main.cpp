@@ -49,7 +49,6 @@ void setup() {
     Joystick.begin();
     Joystick.setRxAxisRange(MIN_RANGE, MAX_RANGE);
     Joystick.setRxAxis(joystickValue);
-    delay(10000);
 }
 
 __attribute__((unused))
