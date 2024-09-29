@@ -6,7 +6,7 @@
 #define DELAY 50
 #define MAX_ANALOG 1023.0
 #define DEGREES_PER_TURN 360
-#define MAX_TURNS 4 // increase this to decrease sensitivity, decrease to increase sensitivity
+#define MAX_TURNS 8 // increase this to decrease sensitivity, decrease to increase sensitivity
 #define MAX_RANGE DEGREES_PER_TURN * MAX_TURNS
 #define MIN_RANGE 0
 
